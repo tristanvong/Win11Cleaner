@@ -42,6 +42,17 @@ function Invoke-Win11Clean {
         } else {
             Write-Host "Found $($TargetedApps.Count) applications to remove:" -ForegroundColor Magenta
             $TargetedApps | Format-Table Name, Id, Type -AutoSize
+
+            if (-not $Config.Settings.DryRun) {
+                Write-Host "WARNING: DryRun is FALSE. Starting actual removal in 10 seconds..." -ForegroundColor Red
+                Start-Sleep -Seconds 10
+            } else {
+                Write-Host "NOTICE: DryRun is TRUE. No changes will be made." -ForegroundColor Yellow
+            }
+
+            foreach ($App in $TargetedApps) {
+                Remove-W11App -App $App -DryRun $Config.Settings.DryRun
+            }
         }
     }
     catch {
