@@ -20,16 +20,21 @@ function Invoke-Win11Clean {
         $Config = Import-W11Config -Path $ConfigPath
         Write-Verbose "SUCCESS: Configuration loaded!"
         
-        Write-Verbose "DryRun Mode is: "
-        if ($Config.Settings.DryRun) {
-            Write-Verbose "TRUE"
-        } else {
-            Write-Verbose "FALSE"
+        Write-Verbose "Detecting Installed Software..."
+        $InstalledApps = Get-W11InstalledSoftware
+        
+        if ($Config.Settings.Verbose) {
+            $InstalledApps | Group-Object Type | ForEach-Object {
+                Write-Verbose "Found $($_.Count) apps of type $($_.Name):"
+                foreach ($App in $_.Group) {
+                    Write-Verbose "    - $($App.Name) [$($App.Version)]"
+                }
+            }
         }
         
-        Write-Verbose "Blacklist contains $($Config.Blacklists.RemoveApps.Count) apps."
+        Write-Host "Detection Complete. Found $($InstalledApps.Count) applications." -ForegroundColor Green
     }
     catch {
-        Write-Error "Failure: Could not load config. Error: $_"
+        Write-Error "Failure: Error during execution. Details: $_"
     }
 }
