@@ -8,6 +8,11 @@ function Invoke-Win11Clean {
         [string]$ConfigPath
     )
 
+    if (-not (Test-IsWindows11)) {
+        Write-Error "CRITICAL: This script is designed for Windows 11 only. Execution stopped."
+        return
+    }
+
     Write-Host "Starting Win11Clean" -ForegroundColor Cyan
 
     if ([string]::IsNullOrWhiteSpace($ConfigPath)) {
