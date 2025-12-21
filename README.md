@@ -1,6 +1,40 @@
 # win11cleanscript
-Simple PowerShell script that helps remove default Windows Applications.
+Win11Clean is a professional, modular PowerShell automation tool designed to help users remove default Windows 11 applications and bloatware. It provides a structured, safe, and transparent way to manage system cleanliness by combining detection from both Microsoft Store (AppX) and WinGet package managers.
 
 # How to use
-1. Change [settings.json](./config/settings.json) where needed.
-2. Run ```./Run-Script.ps1```
+## Prerequisites
+* OS: Windows 11
+* WinGet
+
+# How it works
+The tool follows a strict automated workflow managed by the [Invoke-Win11Clean](./src/Public/Invoke-Win11Clean.ps1) function:
+
+* Environment Check: Runs [Test-IsWindows11](./src/Private/Test-IsWindows11.ps1)  to confirm operating system compatibility.
+* Config Initialization: Imports settings.json and automatically resolves the log path to the user's %TEMP% directory if not explicitly defined.
+* Discovery: Scans for all AppX and WinGet packages currently installed on the system.
+* Filtering: Cross-references discovered apps against user-defined Blacklist, Whitelist, and Safeguard rules.
+* Execution Policy:
+    * If DryRun is false, it waits for 10 seconds so the user has time to stop the script.
+    * Iterates through targeted apps, applying provider-specific (AppX or WinGet) removal commands.
+
+## Execute the script:
+1. Customize your preferences in [settings.json](./config/settings.json).
+2. Open a PowerShell terminal as Administrator.
+3. Execute the wrapper script from the project root: 
+
+```ps
+./Run-Script.ps1
+```
+
+# Configuration guide
+The [config/settings.json](./config/settings.json) file is the central control for the tool.
+
+## Settings
+* LogPath: Destination for the log file (leave empty if default temporary storage path is desired).
+* DryRun: Set to true to test settings without deleting anything.
+* Verbose: Set to true for detailed console output during the execution of the PowerShell tool.
+
+## Application rules
+* Whitelists (KeepApps): Apps here are never removed, even if they match a blacklist rule.
+* Blacklists (RemoveApps): Strings that target apps for removal (example: "Google Chrome").
+* Safeguards (CriticalApps): Apps that require a "Y" (yes confirmation) manual prompt even if blacklisted.
