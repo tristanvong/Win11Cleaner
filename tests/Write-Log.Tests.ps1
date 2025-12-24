@@ -1,29 +1,29 @@
+BeforeAll {
+    # Dot-source the necessary functions
+    $LogFunc = Join-Path $PSScriptRoot "..\src\Private\Write-Log.ps1"
+    $ConfigFunc = Join-Path $PSScriptRoot "..\src\Private\Import-W11Config.ps1"
+        
+    if (Test-Path $LogFunc) { . $LogFunc } else { throw "Missing: $LogFunc" }
+    if (Test-Path $ConfigFunc) { . $ConfigFunc } else { throw "Missing: $ConfigFunc" }
+
+    # Setup temporary paths for testing
+    $script:TestConfigPath = Join-Path $env:TEMP "test-log-settings.json"
+        
+    # Create a mock config
+    $ConfigJson = @{
+        Settings = @{ LogPath = "" }
+    } | ConvertTo-Json
+    $ConfigJson | Out-File $script:TestConfigPath -Force
+
+    # Resolve the LogPath using Import function
+    $Config = Import-W11Config -Path $script:TestConfigPath
+    $script:TargetLogPath = $Config.Settings.LogPath
+
+    # Start with no existing log file
+    if (Test-Path $script:TargetLogPath) { Remove-Item $script:TargetLogPath -Force }
+}
+
 Describe "Write-Log Functionality" {
-    BeforeAll {
-        # Dot-source the necessary functions
-        $LogFunc = Join-Path $PSScriptRoot "..\src\Private\Write-Log.ps1"
-        $ConfigFunc = Join-Path $PSScriptRoot "..\src\Private\Import-W11Config.ps1"
-        
-        if (Test-Path $LogFunc) { . $LogFunc } else { throw "Missing: $LogFunc" }
-        if (Test-Path $ConfigFunc) { . $ConfigFunc } else { throw "Missing: $ConfigFunc" }
-
-        # Setup temporary paths for testing
-        $script:TestConfigPath = Join-Path $env:TEMP "test-log-settings.json"
-        
-        # Create a mock config
-        $ConfigJson = @{
-            Settings = @{ LogPath = "" }
-        } | ConvertTo-Json
-        $ConfigJson | Out-File $script:TestConfigPath -Force
-
-        # Resolve the LogPath using Import function
-        $Config = Import-W11Config -Path $script:TestConfigPath
-        $script:TargetLogPath = $Config.Settings.LogPath
-
-        # Start with no existing log file
-        if (Test-Path $script:TargetLogPath) { Remove-Item $script:TargetLogPath -Force }
-    }
-
     AfterAll {
         # Clean up all temporary files made for the test
         if (Test-Path $script:TestConfigPath) { Remove-Item $script:TestConfigPath -Force }
