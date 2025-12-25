@@ -37,6 +37,9 @@ The tool follows a strict automated workflow managed by the [Invoke-Win11Clean](
 The [config/settings.json](./config/settings.json) file is the central control for the tool.
 
 ## Settings
+> [!NOTE]  
+> DryRun defaults to FALSE (safe mode). Set it to TRUE in [config/settings.json](./config/settings.json) to enable actual application removal.
+
 * LogPath: Destination for the log file (leave empty if default temporary storage path is desired).
 * DryRun: Set to true to test settings without deleting anything.
 * Verbose: Set to true for detailed console output during the execution of the PowerShell tool.
