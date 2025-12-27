@@ -11,6 +11,7 @@ function Invoke-Win11Clean {
         4. Filtering: Cross-references discovered apps against your Blacklist and Whitelist.
         5. Safety Check: If 'DryRun' is false, it enforces a 10-second countdown before starting removals.
         6. Execution: Iterates through targeted apps and calls 'Remove-W11App'.
+        7. Undo Logging: If apps were removed, records the session (what applications were uninstalled) to the 'UndoPath' for later restoration.
 
     .PARAMETER ConfigPath
         The path to the settings.json file. Defaults to '..\..\config\settings.json' relative to the script's location.
@@ -22,6 +23,10 @@ function Invoke-Win11Clean {
         Invoke-Win11Clean -Verbose
         Runs the full detection and removal process with detailed console output.
 
+    .PARAMETER UndoPath
+        The file path where the removal history for the current session will be saved.
+        This path is passed to 'Write-W11Undo' to use the Undo functionality.
+
     .EXAMPLE
         Invoke-Win11Clean -NoConfirm
         Runs the process and automatically removes critical apps without prompting for confirmation.
@@ -29,7 +34,8 @@ function Invoke-Win11Clean {
     [CmdletBinding()]
     param (
         [string]$ConfigPath,
-        [switch]$NoConfirm
+        [switch]$NoConfirm,
+        [string]$UndoPath
     )
 
     if (-not (Test-IsWindows11)) {
@@ -88,8 +94,18 @@ function Invoke-Win11Clean {
                 Write-Log -Message "DryRun is TRUE." -Path $LogPath
             }
 
+            $SuccessfullyRemoved = @()
             foreach ($App in $TargetedApps) {
-                Remove-W11App -App $App -DryRun $Config.Settings.DryRun -LogPath $LogPath -NoConfirm $Config.Settings.NoConfirm
+                $IsRemoved = Remove-W11App -App $App -DryRun $Config.Settings.DryRun -LogPath $LogPath -NoConfirm $NoConfirm
+                
+                if ($IsRemoved) {
+                    $SuccessfullyRemoved += $App
+                }
+            }
+
+            if ($SuccessfullyRemoved.Count -gt 0 -and -not $Config.Settings.DryRun) {
+                Write-W11Undo -RemovedApps $SuccessfullyRemoved -Path $UndoPath
+                Write-Host "Undo history updated: $UndoPath" -ForegroundColor Gray
             }
         }
     }

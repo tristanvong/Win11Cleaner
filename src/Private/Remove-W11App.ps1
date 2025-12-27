@@ -21,6 +21,11 @@ function Remove-W11App {
 
     .PARAMETER NoConfirm
         If $true, ignores 'IsCritical' status and proceeds with removal without a manual prompt.
+
+    .OUTPUTS
+        System.Boolean. Returns $true if the application was successfully removed from the system.
+        Returns $false if removal failed or was skipped (DryRun).
+        'Invoke-Win11Clean' uses this result to determine if the app should be added to the Undo log.
     #>
     [CmdletBinding()]
     param (
@@ -86,9 +91,11 @@ function Remove-W11App {
         
         Write-Host "SUCCESS: $($App.Name) removed." -ForegroundColor Green
         Write-Log -Message "SUCCESS: Removed $($App.Name)" -Path $LogPath
+        return $true
     }
     catch {
         Write-Error "FAILED to remove $($App.Name). Error: $_"
         Write-Log -Message "ERROR: Failed to remove $($App.Name). Details: $_" -Path $LogPath -Level "ERROR"
+        return $false
     }
 }
