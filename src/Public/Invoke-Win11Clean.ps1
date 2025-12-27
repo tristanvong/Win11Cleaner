@@ -11,6 +11,7 @@ function Invoke-Win11Clean {
         4. Filtering: Cross-references discovered apps against your Blacklist and Whitelist.
         5. Safety Check: If 'DryRun' is false, it enforces a 10-second countdown before starting removals.
         6. Execution: Iterates through targeted apps and calls 'Remove-W11App'.
+        7. Undo Logging: If apps were removed, records the session (what applications were uninstalled) to the 'UndoPath' for later restoration.
 
     .PARAMETER ConfigPath
         The path to the settings.json file. Defaults to '..\..\config\settings.json' relative to the script's location.
