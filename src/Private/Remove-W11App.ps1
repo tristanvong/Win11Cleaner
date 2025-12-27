@@ -86,9 +86,11 @@ function Remove-W11App {
         
         Write-Host "SUCCESS: $($App.Name) removed." -ForegroundColor Green
         Write-Log -Message "SUCCESS: Removed $($App.Name)" -Path $LogPath
+        return $true
     }
     catch {
         Write-Error "FAILED to remove $($App.Name). Error: $_"
         Write-Log -Message "ERROR: Failed to remove $($App.Name). Details: $_" -Path $LogPath -Level "ERROR"
+        return $false
     }
 }

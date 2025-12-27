@@ -24,12 +24,20 @@
 #>
 [CmdletBinding()]
 param (
-    [switch]$NoConfirm
+    [switch]$NoConfirm,
+    [switch]$Undo
 )
 
 $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath "src\Win11Clean.psd1"
 Import-Module -Name $ModulePath -Force
 
 $ConfigPath = Join-Path -Path $PSScriptRoot -ChildPath "config\settings.json"
+$UndoPath = Join-Path $env:TEMP "Win11CleanUndo.json"
+
 $Config = Get-Content -Path $ConfigPath | ConvertFrom-Json
-Invoke-Win11Clean -Verbose:$Config.Settings.Verbose -NoConfirm:$NoConfirm
+
+if ($Undo) {
+    Invoke-W11Undo -UndoPath $UndoPath
+} else {
+    Invoke-Win11Clean -Verbose:$Config.Settings.Verbose -NoConfirm:$NoConfirm -UndoPath $UndoPath
+}

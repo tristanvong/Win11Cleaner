@@ -29,7 +29,8 @@ function Invoke-Win11Clean {
     [CmdletBinding()]
     param (
         [string]$ConfigPath,
-        [switch]$NoConfirm
+        [switch]$NoConfirm,
+        [string]$UndoPath
     )
 
     if (-not (Test-IsWindows11)) {
@@ -88,8 +89,18 @@ function Invoke-Win11Clean {
                 Write-Log -Message "DryRun is TRUE." -Path $LogPath
             }
 
+            $SuccessfullyRemoved = @()
             foreach ($App in $TargetedApps) {
-                Remove-W11App -App $App -DryRun $Config.Settings.DryRun -LogPath $LogPath -NoConfirm $Config.Settings.NoConfirm
+                $IsRemoved = Remove-W11App -App $App -DryRun $Config.Settings.DryRun -LogPath $LogPath -NoConfirm $NoConfirm
+                
+                if ($IsRemoved) {
+                    $SuccessfullyRemoved += $App
+                }
+            }
+
+            if ($SuccessfullyRemoved.Count -gt 0 -and -not $Config.Settings.DryRun) {
+                Write-W11Undo -RemovedApps $SuccessfullyRemoved -Path $UndoPath
+                Write-Host "Undo history updated: $UndoPath" -ForegroundColor Gray
             }
         }
     }
