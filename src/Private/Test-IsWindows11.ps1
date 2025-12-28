@@ -13,7 +13,7 @@ function Test-IsWindows11 {
     
     # Windows 11 build starts from 22000
     # (https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information)
-    if ($OS.BuildNumber -ge 22000 -and $OS.Caption -match "Windows") {
+    if ($OS.BuildNumber -ge 22000 -and $OS.Caption -match "Windows" -and $IsWindows) {
         return $true
     }
     
