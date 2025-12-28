@@ -36,7 +36,8 @@ function Invoke-Win11Clean {
         [string]$ConfigPath,
         [switch]$NoConfirm,
         [string]$UndoPath,
-        [switch]$Manual
+        [switch]$Manual,
+        [switch]$Text
     )
 
     if (-not (Test-IsWindows11)) {
@@ -82,6 +83,10 @@ function Invoke-Win11Clean {
             # Use GUI/Out-GridView selection
             Write-Host "Entering Manual Selection Mode..." -ForegroundColor Cyan
             $TargetedApps = Get-W11ManualSelection -InstalledApps $InstalledApps
+        } elseif ($Text) {
+            # Use text mode selection
+            Write-Host "Entering Text Selection Mode (TUI)..." -ForegroundColor Cyan
+            $TargetedApps = Get-W11TextSelection -InstalledApps $InstalledApps
         } else {
             # Use settings.json rules
             $TargetedApps = Select-W11AppsToRemove -InstalledApps $InstalledApps -Config $Config
