@@ -22,6 +22,9 @@ function Remove-W11App {
     .PARAMETER NoConfirm
         If $true, ignores 'IsCritical' status and proceeds with removal without a manual prompt.
 
+    .PARAMETER Strict
+        If $true, the script will throw a terminating error if the uninstallation fails.
+
     .OUTPUTS
         System.Boolean. Returns $true if the application was successfully removed from the system.
         Returns $false if removal failed or was skipped (DryRun).
@@ -39,7 +42,10 @@ function Remove-W11App {
         [string]$LogPath,
 
         [Parameter(Mandatory = $false)]
-        [bool]$NoConfirm = $false
+        [bool]$NoConfirm = $false,
+        
+        [Parameter(Mandatory = $false)]
+        [switch]$Strict
     )
 
     Write-Log -Message "Processing removal for: $($App.Name)" -Path $LogPath
@@ -95,7 +101,12 @@ function Remove-W11App {
     }
     catch {
         Write-Error "FAILED to remove $($App.Name). Error: $_"
-        Write-Log -Message "ERROR: Failed to remove $($App.Name). Details: $_" -Path $LogPath -Level "ERROR"
+        Write-Log -Message "Failed to remove $($App.Name). Details: $_" -Path $LogPath -Level "ERROR"
+
+        if ($Strict) {
+            throw "STRICT MODE: Aborting execution due to uninstallation failure of $($App.Name)."
+        }
+        
         return $false
     }
 }

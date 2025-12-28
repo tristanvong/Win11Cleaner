@@ -19,6 +19,9 @@ function Invoke-Win11Clean {
     .PARAMETER NoConfirm
         If present, bypasses manual 'Y' confirmation prompts for apps marked as Critical.
 
+    .PARAMETER Strict
+        If present, ensures the script aborts immediately if any application removal fails.
+
     .EXAMPLE
         Invoke-Win11Clean -Verbose
         Runs the full detection and removal process with detailed console output.
@@ -37,7 +40,8 @@ function Invoke-Win11Clean {
         [switch]$NoConfirm,
         [string]$UndoPath,
         [switch]$Manual,
-        [switch]$Text
+        [switch]$Text,
+        [switch]$Strict
     )
 
     if (-not (Test-IsWindows11)) {
@@ -111,7 +115,7 @@ function Invoke-Win11Clean {
 
             $SuccessfullyRemoved = @()
             foreach ($App in $TargetedApps) {
-                $IsRemoved = Remove-W11App -App $App -DryRun $Config.Settings.DryRun -LogPath $LogPath -NoConfirm $NoConfirm
+                $IsRemoved = Remove-W11App -App $App -DryRun $Config.Settings.DryRun -LogPath $LogPath -NoConfirm $NoConfirm -Strict:$Strict
                 
                 if ($IsRemoved) {
                     $SuccessfullyRemoved += $App
