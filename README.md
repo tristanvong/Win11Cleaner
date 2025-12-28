@@ -56,7 +56,7 @@ The [config/settings.json](./config/settings.json) file is the central control f
 > [!NOTE]  
 > DryRun defaults to TRUE (safe mode). Set it to FALSE in [config/settings.json](./config/settings.json) to enable actual application removal.
 
-* LogPath: Destination for the log file (leave empty if default temporary storage path is desired).
+* LogPath: Destination for the log file (leave empty for default temporary storage path).
 * DryRun: Set to true to test settings without deleting anything.
 * Verbose: Set to true for detailed console output during the execution of the PowerShell tool.
 
