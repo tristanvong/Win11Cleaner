@@ -17,6 +17,9 @@
 .PARAMETER Manual
     If present, bypasses the (application) rules defined in 'settings.json' (DryRun and Verbose (switches) are still turned on/off with this file) and launches a graphical user interface (GUI) to manually select which apps to remove and which to tag as critical.
 
+.PARAMETER Text
+    If present, bypasses 'settings.json' and launches an interactive command-line interface (TUI) to search and select apps for removal and safeguard tagging.
+
 .EXAMPLE
     .\Run-Script.ps1
     Runs the full cleanup process using settings defined in config\settings.json.
@@ -32,6 +35,10 @@
 .EXAMPLE
     .\Run-Script.ps1 -Manual
     Launches an interactive selection process using 'Out-GridView' to pick applications for removal and safeguard tagging.
+
+.EXAMPLE
+    .\Run-Script.ps1 -Text
+    Launches an interactive terminal-based selection process to pick applications for removal.
 
 .NOTES
     This script must be run from the root of the project folder so it can correctly resolve the relative paths to the 'src' and 'config' directories.

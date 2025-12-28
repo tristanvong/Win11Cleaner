@@ -44,6 +44,11 @@ The tool follows a strict automated workflow managed by the [Invoke-Win11Clean](
 ./Run-Script.ps1 -Manual
 ```
 
+```ps
+# Text selection mode (Command-line interface)
+./Run-Script.ps1 -Text
+```
+
 # Configuration guide
 The [config/settings.json](./config/settings.json) file is the central control for the tool.
 
