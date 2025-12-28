@@ -40,7 +40,8 @@
 param (
     [switch]$NoConfirm,
     [switch]$Undo,
-    [switch]$Manual
+    [switch]$Manual,
+    [switch]$Text
 )
 
 $ModulePath = Join-Path -Path $PSScriptRoot -ChildPath "src\Win11Clean.psd1"
@@ -54,5 +55,5 @@ $Config = Get-Content -Path $ConfigPath | ConvertFrom-Json
 if ($Undo) {
     Invoke-W11Undo -UndoPath $UndoPath
 } else {
-    Invoke-Win11Clean -Verbose:$Config.Settings.Verbose -NoConfirm:$NoConfirm -UndoPath $UndoPath -Manual:$Manual
+    Invoke-Win11Clean -Verbose:$Config.Settings.Verbose -NoConfirm:$NoConfirm -UndoPath $UndoPath -Manual:$Manual -Text:$Text
 }
