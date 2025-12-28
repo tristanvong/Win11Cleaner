@@ -35,7 +35,8 @@ function Invoke-Win11Clean {
     param (
         [string]$ConfigPath,
         [switch]$NoConfirm,
-        [string]$UndoPath
+        [string]$UndoPath,
+        [switch]$Manual
     )
 
     if (-not (Test-IsWindows11)) {
@@ -75,7 +76,16 @@ function Invoke-Win11Clean {
         Write-Log -Message "Detection Complete. Found $($InstalledApps.Count) apps." -Path $LogPath
 
         Write-Verbose "Checking which Apps to Remove..."
-        $TargetedApps = Select-W11AppsToRemove -InstalledApps $InstalledApps -Config $Config
+        
+        $TargetedApps = @()
+        if ($Manual) {
+            # Use GUI/Out-GridView selection
+            Write-Host "Entering Manual Selection Mode..." -ForegroundColor Cyan
+            $TargetedApps = Get-W11ManualSelection -InstalledApps $InstalledApps
+        } else {
+            # Use settings.json rules
+            $TargetedApps = Select-W11AppsToRemove -InstalledApps $InstalledApps -Config $Config
+        }
         
         if ($TargetedApps.Count -eq 0) {
             Write-Host "No applications matched your removal list." -ForegroundColor Green
