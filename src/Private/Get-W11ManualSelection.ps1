@@ -4,7 +4,20 @@ function Get-W11ManualSelection {
         Provides a GUI for manual application selection.
     
     .DESCRIPTION
-        Uses 'Out-GridView' to allow users to pick applications for removal and then pick which of those should be marked as critical (confirmation required before they are deleted).
+        Bypasses the application configuration rules from settings.json and provides a two-step interactive selection process using 'Out-GridView':
+        1. Removal Selection: Lists all detected applications. The user selects which apps should be added to the session's blacklist.
+        2. Safeguard Selection: Filters the list down to the user's previous selection. The user then picks which of these are "Critical" and should require a manual confirmation prompt during the removal phase.
+        
+        This is useful for users who want to perform cleanups without editing the 'settings.json' file.
+
+    .PARAMETER InstalledApps
+        An array of application objects gathered from the system.
+
+    .OUTPUTS
+        System.Array. An array of PSCustomObjects that have been updated with the 'IsCritical' property based on user interaction.
+
+    .EXAMPLE
+        $Selected = Get-W11ManualSelection -InstalledApps $AllApps
     #>
     [CmdletBinding()]
     param (

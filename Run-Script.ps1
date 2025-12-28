@@ -14,6 +14,9 @@
 .PARAMETER Undo
     If present, triggers 'Invoke-W11Undo' to restore previously removed applications instead of running a new cleanup.
 
+.PARAMETER Manual
+    If present, bypasses the (application) rules defined in 'settings.json' (DryRun and Verbose (switches) are still turned on/off with this file) and launches a graphical user interface (GUI) to manually select which apps to remove and which to tag as critical.
+
 .EXAMPLE
     .\Run-Script.ps1
     Runs the full cleanup process using settings defined in config\settings.json.
@@ -25,6 +28,10 @@
 .EXAMPLE
     .\Run-Script.ps1 -Undo
     Displays the removal history and allows the user to restore applications to a previous state.
+
+.EXAMPLE
+    .\Run-Script.ps1 -Manual
+    Launches an interactive selection process using 'Out-GridView' to pick applications for removal and safeguard tagging.
 
 .NOTES
     This script must be run from the root of the project folder so it can correctly resolve the relative paths to the 'src' and 'config' directories.
