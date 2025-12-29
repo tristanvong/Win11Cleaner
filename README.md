@@ -5,11 +5,19 @@ Win11Cleaner is a professional, modular PowerShell automation tool designed to h
 ## Prerequisites
 * OS: Windows 11
 * WinGet
+* Newest PowerShell version ($IsWindows is not shipped with the older PowerShell 5.1 (default version))
+
+# Installation
+1. Clone the project to a local directory.
+2. No further installation is required as this project is designed to run as a portable PowerShell module.
 
 ## Execute the script:
 1. Customize your preferences in [settings.json](./config/settings.json).
 2. Open a PowerShell terminal as Administrator.
-3. Execute the wrapper script from the project root: 
+3. Execute the wrapper script from the project root:
+
+> [!TIP]  
+> A combination of options is possible such as `./Run-Script.ps1 -NoConfirm -Manual -Text -Script`. However it will only be run in Manual/Out-GridView mode because it filters the interaction mode in [Invoke-Win11Clean.ps1](src/Public/Invoke-Win11Clean.ps1). If the -Undo parameter is given such as: `./Run-Script.ps1 -NoConfirm -Manual -Text -Undo` the project will only run the undo functionality because this is filtered in [Run-Script.ps1](Run-Script.ps1).
 
 ```ps
 # Standard execution (with prompts for critical apps)
@@ -64,3 +72,25 @@ The [config/settings.json](./config/settings.json) file is the central control f
 * Whitelists (KeepApps): Apps here are never removed, even if they match a blacklist rule.
 * Blacklists (RemoveApps): Strings that target apps for removal (example: "Google Chrome").
 * Safeguards (CriticalApps): Apps that require a "Y" (yes confirmation) manual prompt even if blacklisted.
+
+# Technical Architecture
+The project follows a modular design pattern, separating internal logic (Private) from the user accessible interface (Public).
+
+## Directory Structure
+* [Run-Script.ps1](Run-Script.ps1): The entry point wrapper that handles module importation and parameter passing.
+* [src/Win11Clean.psd1](src/Win11Clean.psd1): The Module Manifest defining exported functions and metadata.
+* [src/Public/](src/Public/): Contains the main function ([Invoke-Win11Clean.ps1](src/Public/Invoke-Win11Clean.ps1)), the application discovery function ([Get-W11InstalledSoftware.ps1](src/Public/Get-W11InstalledSoftware.ps1)) and the main undo functionality ([Invoke-W11Undo.ps1](src/Public/Invoke-W11Undo.ps1)).
+* [src/Private/](src/Private/): Contains helper functions for OS checks, JSON parsing, logging, and provider-specific removal logic (AppX and WinGet).
+* [tests/](tests/): A comprehensive Pester testing suite providing code coverage for both public and private functions.
+
+# Sources and References
+
+* All basic knowledge regarding PowerShell learnt from school course 'System Automation & Scripting' @ EhB
+* Generative AI was used as aid in the making of this project:
+    * [Conversation 1](https://gemini.google.com/share/aa0a06dc3d63)
+    * [Conversation 2](https://gemini.google.com/share/cfecc6121cc9)
+    * [Conversation 3](https://gemini.google.com/share/916eb3ec899d)
+    * [Conversation 4](https://gemini.google.com/share/bf38b1b3c1c7)
+* [$IsWindows automatic variable](https://stackoverflow.com/questions/44703646/determine-the-os-version-linux-and-windows-from-powershell)
+* [GitHub Action Pester integration](https://pester.dev/docs/usage/code-coverage#integrating-with-github-actions)
+* [WinGet documentation](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
