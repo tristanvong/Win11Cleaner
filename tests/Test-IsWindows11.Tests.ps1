@@ -13,7 +13,7 @@ Describe "Test-IsWindows11" {
         }
         Mock Get-CimInstance { return $MockCim }
 
-        Test-IsWindows11 | Should -Be $true
+        ((Test-IsWindows11) -and $IsWindows) | Should -Be $true
     }
 
     # 2. FAIL: Old Windows
@@ -24,7 +24,7 @@ Describe "Test-IsWindows11" {
         }
         Mock Get-CimInstance { return $MockCim }
 
-        Test-IsWindows11 | Should -Be $false
+        ((Test-IsWindows11) -and $IsWindows) | Should -Be $false
     }
 
     # 3. FAIL: High build, wrong OS
@@ -35,7 +35,7 @@ Describe "Test-IsWindows11" {
         }
         Mock Get-CimInstance { return $MockCim }
 
-        Test-IsWindows11 | Should -Be $false
+        ((Test-IsWindows11) -and $IsWindows) | Should -Be $false
     }
 
     # 4. FAIL: Low build, wrong OS
@@ -46,6 +46,10 @@ Describe "Test-IsWindows11" {
         }
         Mock Get-CimInstance { return $MockCim }
 
-        Test-IsWindows11 | Should -Be $false
+        ((Test-IsWindows11) -and $IsWindows) | Should -Be $false
+    }
+
+    It "Returns $true automatic OS detection variable detects windows" {
+        $IsWindows | Should -Be $true
     }
 }
