@@ -91,6 +91,8 @@ The project follows a modular design pattern, separating internal logic (Private
     * [Conversation 2](https://gemini.google.com/share/cfecc6121cc9)
     * [Conversation 3](https://gemini.google.com/share/916eb3ec899d)
     * [Conversation 4](https://gemini.google.com/share/bf38b1b3c1c7)
+    * [Conversation 5](https://gemini.google.com/share/cf15dab9b40a)
+    * [Conversation 6](https://gemini.google.com/share/07c4d93c2ee7)
 * [$IsWindows automatic variable](https://stackoverflow.com/questions/44703646/determine-the-os-version-linux-and-windows-from-powershell)
 * [GitHub Action Pester integration](https://pester.dev/docs/usage/code-coverage#integrating-with-github-actions)
 * [WinGet documentation](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
